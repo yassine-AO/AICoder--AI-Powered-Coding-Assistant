@@ -126,7 +126,9 @@ The app can export conversation data into structured documents. Users select a f
 ## Demo Video
 To see AlCoder in action, watch the demo video below:
 
-[![AICoder Demo Video](https://i.vimeocdn.com/video/5725989620-7ab4e9d857c5c15ac9e4e4bc22ae20c93d087f7097e6173d1_640x360.jpg)](https://vimeo.com/1090111275)
+## Demo Video  
+[Click here to watch the AICoder demo video](https://vimeo.com/1090111275)
+
 
 
 ## Future Enhancements
