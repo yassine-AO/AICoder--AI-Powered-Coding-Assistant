@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.name }} The Coder</title>
+    <link rel="icon" type="image/png" href="/static/assets/AICoder.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dashboard_design.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <style>
+        .input-container {
+            opacity: 0.3;
+            transition: opacity 0.3s ease-in-out;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-container:hover {
+            opacity: 1;
+        }
+
+        /* Ensure child elements maintain full opacity */
+        .input-container * {
+            opacity: 1;
+        }
+
+        /* Documentation Button */
+        .doc-btn {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .doc-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .doc-btn i {
+            font-size: 20px;
+            color: #fff;
+        }
+
+        /* Tooltip */
+        .doc-btn::after {
+            content: "Document this conversation";
+            position: absolute;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .doc-btn:hover::after {
+            opacity: 1;
+        }
+
+        /* Documentation Modal */
+        .doc-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            z-index: 2000;
+        }
+
+        .doc-modal.active {
+            display: block;
+        }
+
+        .doc-modal h3 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .doc-modal select, .doc-modal textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: white;
+        }
+
+        .doc-modal textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .doc-modal button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #CD0404;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .doc-modal button:hover {
+            opacity: 0.9;
+        }
+
+        .doc-modal .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1500;
+        }
+
+        .modal-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-gradient"></div>
+{#    Navbar Items#}
+    <header>
+        <div class="left-section">
+            <div class="logo-container">
+                <h1 class="logo"><a href="/dashboard" style="text-decoration: none; color: inherit;">AI<span
+                        style="color: #CD0404;">*</span>Coder</a></h1>
+                <button id="conversations-btn" class="icon-btn conversations-btn">
+                    <i class="fas fa-book-open"></i>
+                </button>
+            </div>
+        </div>
+        <div class="right-section">
+            <div class="profile-container">
+                <img src="{{ user.photo_url }}" alt="Profile" class="profile-img" id="profile-btn" onerror="this.src='./static/assets/images.jpg'; this.onerror=null;">
+            </div>
+        </div>
+    </header>
+
+
+
+{#    Sidebar of conversations#}
+    <div class="sidebar" id="conversations-sidebar">
+        <div class="sidebar-header">
+            <h3>Conversations</h3>
+            <button class="icon-btn close-sidebar" id="close-conversations">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="sidebar-content">
+            <button class="new-chat-btn" onclick="window.location.href='/dashboard'"><i class="fas fa-plus"></i> New Chat</button>
+            <div class="conversations-list">
+                {% for conv in conversations %}
+                    <div class="conversation-item {% if conv.conversationID == current_conversation_id %}active{% endif %}" data-conv-id="{{ conv.conversationID }}">
+                        <div class="conversation-details">
+                            <span class="conversation-name">{{ conv.name }}</span>
+                            <span class="conversation-timestamp">{{ conv.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </div>
+                        <div class="conversation-actions">
+                            <button class="icon-btn small"><i class="fas fa-edit"></i></button>
+                            <button class="icon-btn small delete-btn" data-conv-id="{{ conv.conversationID }}"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+
+{#    Sidebar of Profile Info#}
+    <div class="sidebar profile-sidebar" id="profile-sidebar">
+        <div class="sidebar-header">
+            <h3>Profile</h3>
+            <button class="icon-btn close-sidebar" id="close-profile">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="profile-content">
+            <img src="{{ user.photo_url }}" alt="Profile" class="profile-img-large" onerror="this.src='./static/assets/images.jpg'; this.onerror=null;">
+            <h4>{{ user.name }} {{ user.surname }}</h4>
+            <p>{{ user.email }}</p>
+            <div class="profile-stats">
+                <div class="stat">
+                    <span class="stat-value">{{ convo_count }}</span>
+                    <span class="stat-label">Conversations</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">{{ messages_count }}</span>
+                    <span class="stat-label">Messages</span>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutButton"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </div>
+
+
+{#    Main CHat Container#}
+    <main>
+        <div class="chat-container">
+            <div class="hero-content" id="hero-content" {% if current_conversation_id %}style="display: none;"{% else %}style="display: block;"{% endif %}>
+                <div class="hero-image">
+                    <img src="/static/assets/AICoder.png" alt="AI Assistant" class="ai-avatar">
+                </div>
+                <h1>Hey {{ user.name }}! Ready to debug? 🚀</h1>
+                <p>Drop your code here and let's make magic happen ✨</p>
+            </div>
+            <div id="messages" class="messages" {% if current_conversation_id %}style="display: flex;"{% else %}style="display: none;"{% endif %}></div>
+                <div class="input-container">
+                    <textarea id="prompt-input" placeholder="How can AI*Coder help you today?"></textarea>
+                    <div id="file-preview" class="file-preview"></div> <!-- New container for file name/icon -->
+                    <div class="input-actions">
+                        <label for="file-upload" class="action-btn">
+                            <i class="fas fa-paperclip"></i>
+                            <input id="file-upload" type="file" accept=".txt,.py,.java,.c,.cpp,.cc,.cs,.js,.html,.css,.php,.rb,.go,.ts,.jsx,.tsx,.sql,.json,.xml,.yaml,.yml,.md,.sh,.bash,.rs,.kt,.scala,.swift,.dart,.lua,.pl,.r,.m,.matlab,.pas,.vb,.fs,.groovy" style="display: none;">
+                        </label>
+
+                        <button id="send-btn" class="send-btn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+        </div>
+    </main>
+
+
+
+{#    Scroll Down Button Arrow#}
+    <button id="scroll-to-bottom" class="scroll-to-bottom-btn">
+        <i class="fas fa-arrow-down"></i>
+    </button>
+
+
+
+    <div class="overlay" id="overlay"></div>
+
+
+    <!-- Button to show form of generation of documentation -->
+    <button class="doc-btn">
+        <i class="fas fa-file-alt"></i>
+    </button>
+
+    <!-- The form of the generation of teh documentation -->
+    <div class="modal-overlay"></div>
+    <div class="doc-modal">
+        <button class="close-btn"><i class="fas fa-times"></i></button>
+        <h3>Document Conversation</h3>
+        <select id="doc-format">
+            <option value="pdf">PDF</option>
+            <option value="markdown">Markdown</option>
+            <option value="txt">Text</option>
+            <option value="latex">LaTeX</option>
+        </select>
+        <textarea placeholder="Additional preferences (e.g., language, formatting, specific sections to include...)"></textarea>
+        <button id="generate-doc">Generate Documentation</button>
+    </div>
+
+    <script>
+        const currentConversationId = "{{ current_conversation_id|default('') }}";
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/13.0.1/markdown-it.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it-emoji/2.0.2/markdown-it-emoji.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it-task-lists/2.1.1/markdown-it-task-lists.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it-footnote/3.0.3/markdown-it-footnote.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="/static/js/dashboard_design.js"></script>
+    <script src="/static/js/document_gen.js"></script>
+
+
+</body>
+
+
+</html>

@@ -1,0 +1,210 @@
+@font-face {
+    font-family: 'Alkes';
+    src: url('/static/assets/AlkesRegular.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Alkes', sans-serif;
+    padding-top: 70px;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.navbar {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    transition: background-color 0.3s ease;
+}
+
+.navbar-brand {
+    font-weight: 990;
+    font-size: 2.5rem;
+    color: #000;
+}
+
+.nav-link {
+    color: #000 !important;
+    font-weight: 600;
+}
+
+.navbar-toggler {
+    border: none;
+}
+
+.section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+h2 {
+    font-weight: 700;
+    font-size: 2.5rem;
+}
+
+.btn-outline-dark {
+    border-width: 2px;
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-dark:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+#login img {
+    vertical-align: middle;
+}
+
+.section-separator {
+    height: 1px;
+    width: 50%;
+    background-color: rgba(128, 128, 128, 0.5);
+    margin: 2rem auto;
+}
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #fff !important;
+    color: #000 !important;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 50%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.scroll-to-top.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.inverted {
+    background-color: #000;
+    color: #fff;
+}
+
+.inverted .navbar {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.inverted .navbar-brand,
+.inverted .nav-link {
+    color: #fff !important;
+}
+
+.inverted .btn-outline-dark {
+    color: #fff;
+    border-color: #fff;
+}
+
+.inverted .btn-outline-dark:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+.inverted .section-separator {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 991.98px) {
+    .navbar {
+        background-color: rgba(255, 255, 255, 1);
+    }
+    
+    .inverted .navbar {
+        background-color: rgba(0, 0, 0, 1);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+.zwa9 {
+    text-align: center;
+    position: relative;
+}
+
+.main-title {
+    font-size: 4rem;
+    font-weight: 990;
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+    transition: all 0.3s ease-in-out;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    height: 2rem;
+    margin-top: 0;
+    opacity: 0.8;
+}
+
+#changing-phrase {
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+#changing-phrase.fade {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+@keyframes colorChange {
+    0%, 100% { color: #000; }
+    50% { color: #bd0303; }
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+@keyframes continuousFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.zwa9::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    animation: rotate 20s linear infinite;
+    z-index: -1;
+}
+
+/* Responsive Font Sizes */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 3.5rem; /* Slightly smaller font on medium screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .main-title {
+        font-size: 3rem; /* Further reduced font size on smaller screens */
+    }
+
+    .subtitle {
+        font-size: 1.2rem; /* Adjust the subtitle size for smaller screens */
+    }
+}
