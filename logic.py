@@ -2,7 +2,7 @@ from groq import Groq
 from googlesearch import search
 
 # Initialize the Groq client with the API key
-client = Groq(api_key="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")
+client = Groq(api_key="groq_api")
 
 def get_links(conversation_data):
     """
